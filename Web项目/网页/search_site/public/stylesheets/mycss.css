@@ -1,0 +1,170 @@
+body{
+	margin: 0; /*外边距*/
+	padding: 0; /*内边距*/
+	background: #F1EAE0; /*背景颜色*/
+    /*background-image: url('../images/background.jpg');*/
+}
+.search-box{
+	position:absolute; /*绝对定位*/
+	top: 50%; /*距上部*/
+	left: 50%; /*距左部*/
+	transform: translate(-50%,-50%); /*修改动画定位*/
+	background: #F1EAE0;
+	height: 40px;
+	border-radius: 40px; /*边框圆角*/
+	padding: 10px;
+}
+.search-box:hover > .search-txt{ /*子元素*/
+	width: 200px;
+	padding:  0 6px;
+}
+.search-box:hover > .serach-btn{
+	background: #F1EAE0;
+	transform: rotateY(360deg); /*Y轴旋转*/
+	}
+.serach-btn{
+	color: #e84118;
+	float: right;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: #F1EAE0;
+	display: flex; /*盒模型*/
+	justify-content: center; /*主轴对齐方式*/
+	align-items: center; /*副轴对齐方式*/
+	transition: 1.8s;	 /*过渡时间*/
+}
+.serach-btn2{
+	position: relative;
+	right: 5px;
+	left: 5px;
+	color: #e84118;
+	float: right;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: #F1EAE0;
+	display: flex; /*盒模型*/
+	margin-right: 10px;
+	justify-content: center; /*主轴对齐方式*/
+	align-items: center; /*副轴对齐方式*/
+	transition: 1.8s;	 /*过渡时间*/
+}
+.search-txt{
+	border: none; /*边框无*/
+	background: none;
+	outline: none; /*轮廓*/
+	float: left;
+	padding-bottom: 0px;
+	color: #000000;
+	font-size: 16px;
+	transition: 0.5s;
+	line-height: 22px; /*行高*/
+	width: 0px;
+}
+.logo{
+    position: absolute;
+    top: 20%;
+    left: 35% ;
+}
+.logo2{
+    position: absolute;
+    top: 15%;
+    left: 0 ;
+}
+.header {
+    /*position: fixed;*/
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #B19F91;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.table2{
+	position: absolute;
+	right: 30px;
+	top: 80px;
+	display: none;
+	background: #F1EAE0;
+}
+/* 定义keyframe动画，命名为blink */
+@keyframes blink{
+	0%{opacity: 1;}
+	100%{opacity: 0;} 
+}
+/* 添加兼容性前缀 */
+@-webkit-keyframes blink {
+	0% { opacity: 1; }
+	100% { opacity: 0; }
+}
+@-moz-keyframes blink {
+	0% { opacity: 1; }
+	100% { opacity: 0; }
+}
+@-ms-keyframes blink {
+	0% {opacity: 1; } 
+	100% { opacity: 0;}
+}
+@-o-keyframes blink {
+	0% { opacity: 1; }
+	100% { opacity: 0; }
+}
+/* 定义blink类*/
+.blink{
+	color: #F1EAE0;
+	font-size:46px;
+	animation: blink 1s linear infinite;  
+	/* 其它浏览器兼容性前缀 */
+	-webkit-animation: blink 1s linear infinite;
+	-moz-animation: blink 1s linear infinite;
+	-ms-animation: blink 1s linear infinite;
+	-o-animation: blink 1s linear infinite;
+}
+.button {
+	float:left;
+	margin-left:10px;
+	font-size: 18px;
+	cursor: pointer;
+	text-align: center;   
+	text-decoration: none;
+	outline: none;
+	color: #F1EAE0;
+	background-color: #B19F91;
+	border: none;
+	border-radius: 15px;
+	box-shadow: 0 9px #999;
+}
+.button:hover {
+	background-color: #85776d
+}
+.button:active {
+	background-color: #85776d;
+	box-shadow: 0 5px #666;
+	transform: translateY(4px);
+}
+.button2 {
+	position: absolute;
+    top: 60%;
+    left: 47%;
+	font-size: 18px;
+	cursor: pointer;
+	text-align: center;   
+	text-decoration: none;
+	outline: none;
+	color: #F1EAE0;
+	background-color: #B19F91;
+	border: none;
+	border-radius: 15px;
+	box-shadow: 0 9px #999;
+}
+.button2:hover {
+	background-color: #85776d
+}
+.button2:active {
+	background-color: #85776d;
+	box-shadow: 0 5px #666;
+	transform: translateY(4px);
+}

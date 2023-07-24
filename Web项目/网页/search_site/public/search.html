@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+<header>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+
+    <!--bootstrap的悬浮表格-->
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+    <!--page list-->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!--bootstrapTable-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.22.1/bootstrap-table.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.22.1/bootstrap-table.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.22.1/locale/bootstrap-table-zh-CN.min.js"></script>
+    <link rel="stylesheet" href="D:/code/bootstrap-table-1.22.1/dist/bootstrap-table.css">
+    <script src="D:/code/bootstrap-table-1.22.1/dist/bootstrap-table.js"></script>
+    <link href="./bootstrap-table-pagejump.css" rel="stylesheet">
+    <script src="./bootstrap-table-pagejump.js"></script>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <!-- 鼠标追随线条 -->
+    <script type="text/javascript" color="0,0,255" opacity='0.7' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+
+    <!--按钮icons-->
+    <script src="https://use.fontawesome.com/1ff3fda05c.js"></script>
+
+    <!--一些css样式-->
+    <link type="text/css" rel="stylesheet" href="./stylesheets/mycss.css">
+
+    <link rel="stylesheet" href="D:/bootstrap-5.3.0-dist/css/bootstrap.css">
+
+    <!--echarts-->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.2/echarts.min.js"></script>
+    <title>新闻搜索</title>
+</header>
+
+<body>
+    <form>
+        <div class="search-box" id="box" style="display: block;">
+            <input class="search-txt"  type="text" name="title_text" placeholder="标题">
+            <input class="search-txt" type="text" name="keywords_text" placeholder="关键词">
+            <input class="search-txt" type="text" name="author_text" placeholder="作者">
+                <button type="button" class="serach-btn" id="btn1">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+        </div>
+        <div class="logo" id="logo">
+            <img src="./images/p.png" width="50%" height="auto">
+        </div>
+    </form>
+    
+    <div class="logo2" id="logo2" style="display: none;">
+        <img src="./images/cloud.png" width="60%" height="auto">
+    </div>
+
+    <div class="header">
+        <div style="width: 90%;">
+        <marquee  direction="left"  behavior="slide"  scrollamount="25">
+            <h1 style="color: #F1EAE0;">　家事国事天下事　事事关心</h1>
+        </marquee>
+        </div>
+        <div class="blink" id="twinkle">
+            <h1 style="color: #e84118;">你好</h1>
+        </div>
+        
+        <div class="buttons">
+            <button type="button" id="btn3" class="serach-btn2" style="display: none;">
+                <i class="fa fa-mail-reply-all" aria-hidden="true"></i>
+            </button>
+            <button type="button" id="btn2" class="serach-btn2" style="display: none;">
+                <i class="fa fa-line-chart" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+
+    <div id="main1" style="width: 600px; height:400px; display:none;"></div> <!--柱状图-->
+    <div id="main2" style="width: 600px; height:400px; display:none;"></div> <!--饼图-->
+    <div id="main3" style="width: 600px; height:400px; display:none;"></div> <!--面积图-->
+    <div id="main4" style="float: right; width: 400px; height:400px; display:none;"></div> <!--热词图-->
+
+
+    <div class="btns">
+        <button class="button" type="button" id="btn4" style="display: none;">
+            柱状图
+        </button>
+        <button class="button" type="button" id="btn5" style="display: none;">
+            饼图
+        </button>
+        <button class="button" type="button" id="btn6" style="display: none;">
+            面积图
+        </button>
+        <button class="button2" type="button" id="btn7" style="display: block;">
+            近日热词
+        </button>
+    </div>
+
+    <div class="table table-hover" style="table-layout: fixed; word-break: break-all;" id="table1">
+        <table width="100%" id="record2" border="1" align="center" style="background-color: #F1EAE0;"></table>
+    </div>
+
+    <div class="table2" style="table-layout: fixed; width: 50%; height: auto;" id="table2">
+        <table width="100%" id="record1" border="0px" align="center" style="background-color: #F1EAE0;"></table>
+    </div>
+
+
+    <script>
+        var total = [["中国",183],["习近平",124],["发展",108],["美国",98],["北约",93],["强国",87],["网络",87],["美",80],["和",75],["文化",73]];
+                    var key = [];
+                    var val = [];
+                    for (let i in total) {
+                        key.push(total[i][0]);
+                        val.push(total[i][1]);
+                    }
+                    var myChart4 = echarts.init(document.getElementById('main4'));
+                    var option4 = {
+                        tooltip: {},
+                        legend: {
+                            data:['热度']
+                        },
+                        xAxis: [{
+                            axisLabel: { //设置x轴的字
+                                show:true,
+                                interval:0,//使x轴横坐标全部显示
+                                textStyle: {//x轴字体样式
+                                    margin: 15
+                                }
+                            },
+                            data: key
+                        }],
+                        yAxis: {},
+                        series: [{
+                            name: '热度',
+                            type: 'bar',
+                            data: val
+                        }, {
+                            name: '热度',
+                            type: 'line',
+                            data: val,
+                            color: '#e84118',
+                            lineStyle: {
+                                width: 3
+                            }
+                        }],
+                        emphasis: {
+                            focus: 'self',
+                            blurScope: 'global'
+                        }
+                    };
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart4.setOption(option4);
+        $(document).ready(function() {
+            const b1 = document.getElementById("btn1");
+            const b2 = document.getElementById("btn2");
+            const b3 = document.getElementById("btn3");
+            const b4 = document.getElementById("btn4");
+            const b5 = document.getElementById("btn5");
+            const b6 = document.getElementById("btn6");
+            const b7 = document.getElementById("btn7");
+            const box = document.getElementById("box");
+            const l = document.getElementById("logo");
+            const cloud = document.getElementById("logo2");
+            const t1 = document.getElementById("table1");
+            const m1 = document.getElementById("main1");
+            const m2 = document.getElementById("main2");
+            const m3 = document.getElementById("main3");
+            const word = document.getElementById("main4");
+            const t2 = document.getElementById("table2");
+            const s = document.getElementById("twinkle");
+            b1.onclick = function() { // 搜索
+                box.style.display = "none";
+                l.style.display = "none";
+                b2.style.display = "block";
+                b3.style.display = "block";
+                b7.style.display = "none";
+                s.style.display = "none";
+                word.style.display = "none";
+                cloud.style.display = "none";
+            }
+            b2.onclick = function() { // 切换图表与表格
+                if ((m1.style.display == "none") && (m2.style.display == "none") && (m3.style.display == "none")) {
+                    t1.style.display = "none";
+                    m1.style.display = "block";
+                    t2.style.display = "block";
+                    b4.style.display = "block";
+                    b5.style.display = "block";
+                    b6.style.display = "block";
+                } else {
+                    t1.style.display = "block";
+                    m1.style.display = "none";
+                    m2.style.display = "none";
+                    m3.style.display = "none";
+                    t2.style.display = "none";
+                    b4.style.display = "none";
+                    b5.style.display = "none";
+                    b6.style.display = "none";
+                }
+            }
+            b3.onclick = function() { // 返回
+                location.reload();
+            }
+            b4.onclick = function() { // 显示柱状图
+                m1.style.display = "block";
+                m2.style.display = "none";
+                m3.style.display = "none";
+            }
+            b5.onclick = function() { // 显示饼图
+                m1.style.display = "none";
+                m2.style.display = "block";
+                m3.style.display = "none";
+            }
+            b6.onclick = function() { // 显示面积图
+                m1.style.display = "none";
+                m2.style.display = "none";
+                m3.style.display = "block";
+            }
+            b7.onclick = function() {
+                if (cloud.style.display == "none") {
+                    cloud.style.display = "block";
+                    word.style.display = "block";
+                }else {
+                    cloud.style.display = "none";
+                    word.style.display = "none";
+                }
+            }
+            $("button[class='serach-btn']").click( function() {
+                $.get('/process_get?title=' + $("input[name='title_text']").val() + '&keywords=' +
+                $("input[name='keywords_text']").val() + '&author=' + $("input[name='author_text']").val(), 
+                function(data) {
+                    let titles = [];
+                    for (let i = 0; i < data.length; i++) {
+                        titles.push(data[i].title);
+                    }
+                    //var blob = new Blob([JSON.stringify(titles)], { type: "" });
+                    //saveAs(blob, "results.json");
+                    let a = {'2023-07-09':0, '2023-07-10':0, '2023-07-11':0, '2023-07-12':0,
+                            '2023-07-13':0, '2023-07-14':0, '2023-07-15':0, '2023-07-16':0,
+                            '2023-07-17':0, '2023-07-18':0, '2023-07-19':0};
+                    for (let i = 0; i < data.length; i++) {
+                        var m = data[i];
+                        var date = m.publish_date.substring(0, 8);
+                        var num = Number(m.publish_date.substring(8, 10)) + 1;
+                        var day = ('' + num).length < 2 ? ((new Array(3)).join('0') + num).slice(-2) : '' + num
+                        date = date + day;
+                        if (date in a) {
+                            a[date] += 1;
+                        }
+                    }
+                    let t = [];
+                    let v = [];
+                    for (let i in a) {
+                        t.push(i);
+                        v.push(a[i]);
+                    }
+
+                    $("#record1").empty();
+                    $("#record1").append('<p>关键词"' + $("input[name='title_text']").val() +'"共 ' + data.length + ' 条记录</p>');
+                    $("#record1").append(
+                        '<table class="table table-hover">'+
+                            '<tr class="table table-hover" style="background-color: #F1EAE0;">\
+                                <td align="center">日期</td>\
+                                <td align="center">频次</td>\
+                            </tr>');
+                    for (let i in a) {
+                        let table = '<tr><td align="center">';
+                        //table += (date + '</td></tr>');  // 日期只取精确到日
+                        table += (i + '</td><td align="center">');  // 日期只取精确到日
+                        table += (a[i] + '</td></tr>');
+                        $("#record1").append(table);
+                    }
+                    $("#record1").append('</table>');
+
+                    // 开始画图
+                    var myChart = echarts.init(document.getElementById('main1'));
+                    var option = {
+                        title: {
+                            text: '热度趋势'
+                        },
+                        tooltip: {},
+                        legend: {
+                            data:['热度']
+                        },
+                        xAxis: {
+                            data: t
+                        },
+                        yAxis: {},
+                        series: [{
+                            name: '热度',
+                            type: 'bar',
+                            data: v
+                        }, {
+                            name: '热度',
+                            type: 'line',
+                            data: v,
+                            color: '#e84118',
+                            lineStyle: {
+                                width: 3
+                            }
+                        }],
+                        emphasis: {
+                            focus: 'self',
+                            blurScope: 'global'
+                        }
+                    };
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+
+                    // 饼图
+                    var myChart2 = echarts.init(document.getElementById('main2'));
+                    var option2 = {
+                        title: {
+                            text: '热度趋势'
+                        },
+                        tooltip: {},
+                        series: [{
+                            name: '热度',
+                            type: 'pie',
+                            data: [{value:v[0], name:t[0]},
+                                    {value:v[1], name:t[1]},
+                                    {value:v[2], name:t[2]},
+                                    {value:v[3], name:t[3]},
+                                    {value:v[4], name:t[4]},
+                                    {value:v[5], name:t[5]},
+                                    {value:v[6], name:t[6]},
+                                    {value:v[7], name:t[7]},
+                                    {value:v[8], name:t[8]},
+                                    {value:v[9], name:t[9]},
+                                    {value:v[10], name:t[10]}],
+                            itemStyle: {}
+                        }],
+                        emphasis: {
+                            focus: 'self',
+                            blurScope: 'global'
+                        }
+                    };
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart2.setOption(option2);
+
+                    var myChart3 = echarts.init(document.getElementById('main3'));
+                    option3 = {
+                        title: {
+                            text: '热度趋势'
+                        },
+                        tooltip: {},
+                        legend: {
+                            data:['热度']
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: t
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            name: '热度',
+                            data: v,
+                            type: 'line',
+                            areaStyle: {},
+                            lineStyle: {
+                                width: 3
+                            }
+                        }]
+                    };
+                    myChart3.setOption(option3);
+                    
+                }),
+
+                $.get('/process_get?title=' + $("input[name='title_text']").val() + '&keywords=' +
+                $("input[name='keywords_text']").val() + '&author=' + $("input[name='author_text']").val(), 
+                function(data) {
+                    var format = function(data){
+                        var l = [];
+                        for (let i = 0; i < data.length; i++) {
+                            var m = data[i];
+                            var date = m.publish_date.substring(0, 8);
+                            var num = Number(m.publish_date.substring(8, 10)) + 1;
+                            var day = ('' + num).length < 2 ? ((new Array(3)).join('0') + num).slice(-2) : '' + num
+                            date = date + day;
+                            var d = {
+                                'url': m.url,
+                                'title': m.title,
+                                'source_name': m.source_name,
+                                'author': m.author,
+                                'publish_date': date
+                            }
+                            l.push(d);
+                        }
+                        return l;
+                    }
+
+                    function aFormatter(value, row, index) {
+                        var u = '<a href="' + value + '">' + row['title'] +'</a>';
+                        return [u].join("");
+                    }
+                    $("#record2").empty();
+                    var result_table = $("#record2");
+                    result_table.bootstrapTable('destroy')
+
+                    $('#record2').bootstrapTable({
+                        pagination: true,
+                        pageSize: 8,
+                        sortStable: true,
+                        paginationShowPageGo: true,
+                        pageList: [6, 8, 10],
+                        search: true,
+                        toolbar: '#toolbar',
+                        contentType: "application/x-www-form-urlencoded",
+                        rowStyle: function(row, index){
+                            var style = {};            
+                            style={css:{'background-color':'#F1EAE0'}};               
+                            return style;
+                        },
+                        detailView: true,
+                        detailFormatter: function(index, row) {
+                            var html = []
+                            $.each(row, function (key, value) {
+                                html.push('<p><b>' + key + ':</b> ' + value + '</p>');
+                            });
+                            return html.join('')
+                        },
+                        columns: [{
+                            field: 'url',
+                            title: '标题',
+                            formatter: aFormatter,
+                            width: 600
+                        },{
+                            field: 'source_name',
+                            title: '来源',
+                            width: 80,
+                            sortable: true
+                        },{
+                            field: 'author',
+                            title: '作者'
+                        },{
+                            field: 'publish_date',
+                            title: '发布日期',
+                            sortable: true
+                        }],
+                        data: format(data)
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
